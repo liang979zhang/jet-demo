@@ -11,16 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.test.entity.Test_User;
 import com.jeesite.modules.test.service.Test_UserService;
+
+import java.util.List;
 
 /**
  * test_domeController
@@ -39,8 +38,25 @@ public class Test_UserController extends BaseController {
 	 */
 	@ModelAttribute
 	public Test_User get(String id, boolean isNewRecord) {
+
 		return test_UserService.get(id, isNewRecord);
 	}
+
+	@RequestMapping(value = "listName")
+	@ResponseBody
+	public String listData(String name, HttpServletRequest request, HttpServletResponse response) {
+		Test_User test_user = new Test_User();
+		test_user.setName(name);
+		List<Test_User> list = test_UserService.findList(test_user);
+		if(list!=null&&list.size()>0){
+			return renderResult(Global.TRUE,"查询成功！",list);
+		}else{
+			return renderResult(Global.FALSE,"查询失败！",list);
+		}
+	}
+
+
+
 	
 	/**
 	 * 查询列表
